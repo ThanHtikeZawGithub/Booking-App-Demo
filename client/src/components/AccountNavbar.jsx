@@ -11,7 +11,7 @@ const AccountNavbar = () => {
     subpage = 'profile';
   }
   function linkClasses(type = undefined) {
-    let classes = "py-2 px-6 inline-flex items-center gap-2";
+    let classes = "py-2 px-6 inline-flex items-center gap-2 text-xs md:text-lg";
     if (type === subpage) {
       classes += " bg-primary text-white rounded-full";
     } else {
@@ -21,18 +21,18 @@ const AccountNavbar = () => {
   }
 
   return (
-    <nav className="w-full flex mt-8 gap-2 justify-center mb-8">
+    <nav className="w-full flex mt-8 gap-2 px-2 justify-center mb-8">
       <Link to={"/account"} className={linkClasses("profile")}>
         <AiOutlineProfile />
-        My Profile
+        Profile
       </Link>
       <Link to={"/account/bookings"} className={linkClasses("bookings")}>
         <BsBookmarkPlus />
-        My Bookings
+        Bookings
       </Link>
       <Link to={"/account/places"} className={linkClasses("places")}>
         <MdOutlinePlace />
-        My accomodations
+        Accomodations
       </Link>
     </nav>
   );

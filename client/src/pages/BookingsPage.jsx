@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { AccountNavbar } from "../components";
+import { AccountNavbar, Image } from "../components";
 import axios from "axios";
 import { differenceInCalendarDays, format } from "date-fns";
 import { RxCalendar } from "react-icons/rx";
@@ -21,22 +21,23 @@ const BookingsPage = () => {
   return (
     <div>
       <AccountNavbar />
-      <div className="grid gap-4">
+      <div className="grid gap-4 px-2 md:px-24">
       {booking?.length > 0 &&
           booking.map((bookings) => (
         <div onClick={()=> setRedirect(`/account/bookings/${bookings._id}`)} className="cursor-pointer">
             <div className="flex gap-4 bg-gray-200 rounded-2xl overflow-hidden">
               {bookings.place.photos.length > 0 && (
-                <div className="w-40 h-20">
-                  <img
-                    src={`http://localhost:4000/uploads/${bookings.place.photos[0]}`}
+                <div className="basis-1/3 md:basis-1/4">
+                  <Image
+                    src={bookings.place.photos[0]}
                     alt="photo"
+                    className="object-cover h-full md:h-[190px] lg:h-[180px] w-full"
                   />
                 </div>
               )}
-              <div className="py-3">
-                <h2 className="text-xl">{bookings.place.title}</h2>
-                <div className="flex items-center gap-2">
+              <div className="py-2 px-2 md:px-8 basis-2/3 md:3/4 ">
+                <h2 className="text-sm md:text-md lg:text-xl">{bookings.place.title}</h2>
+                <div className="text-sm flex items-center gap-2">
                   <RxCalendar />
                   {format(new Date(bookings.checkIn), "yyyy-MM-dd")}
                   &rarr;
@@ -51,9 +52,9 @@ const BookingsPage = () => {
                   )}
                   days 
                   </div>
-                  <div className="flex items-center gap-1">
+                  <div className=" text-sm flex items-center gap-1">
                   <FaRegMoneyBillAlt/>
-                  Total price: <span className="font-bold">MMK </span>{bookings.price}
+                  Total price: <span className="font-bold">{bookings.price} MMK</span>
                   </div>
                 
               </div>

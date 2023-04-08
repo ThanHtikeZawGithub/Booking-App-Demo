@@ -5,6 +5,8 @@ import PhotoUpload from "./PhotoUpload";
 import AccountNavbar from "./AccountNavbar";
 import Booking from "./Booking";
 import PlacePhoto from "./PlacePhoto";
+import MenuItems from "./MenuItems";
+import Image from "./Image";
 
 export {Navbar,
         Layout,
@@ -12,4 +14,6 @@ export {Navbar,
         PhotoUpload,
         AccountNavbar,
         Booking,
-        PlacePhoto};
+        PlacePhoto,
+        MenuItems,
+        Image};

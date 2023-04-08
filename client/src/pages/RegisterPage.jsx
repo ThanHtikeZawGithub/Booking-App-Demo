@@ -1,7 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useState } from "react";
-import axios from 'axios';
+import axios from "axios";
+import { FcGoogle } from "react-icons/fc";
 
 const RegisterPage = () => {
   const [name, setName] = useState("");
@@ -10,17 +11,17 @@ const RegisterPage = () => {
 
   const registerUser = async (e) => {
     e.preventDefault();
-    try{
-      await axios.post('/register', {
+    try {
+      await axios.post("/register", {
         name,
         email,
-        password
+        password,
       });
-      alert('Registration successful');
-    }catch(err){
-      alert('Registeration failed.Please try again')
+      alert("Registration successful");
+    } catch (err) {
+      alert("Registeration failed.Please try again");
     }
-  }
+  };
   return (
     <div className="mt-4 grow flex items-center justify-around">
       <div className="mb-28">
@@ -44,15 +45,22 @@ const RegisterPage = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          <button className="primary"
-            >Register</button>
-          <div className="text-center py-2">
-            Already Registered?
-            <Link to={"/login"} className="underline">
-              Login
-            </Link>
+          <button className="primary my-2 hover:scale-105 transition">
+            Register
+          </button>
+          <div className="flex items-center justify-center gap-2">
+            <div className="text-center py-2">
+              Already Registered?
+              <Link to={"/login"} className="underline ml-2">
+                Login
+              </Link>
+            </div>
           </div>
         </form>
+        <div className="flex items-center gap-16 bg-white border py-1 mt-4 rounded-lg shadow-sm hover:shadow-lg cursor-pointer ">
+          <FcGoogle className="w-8 h-8 left-0" />
+          <p className="text-center justify-center">Continue with Google</p>
+        </div>
       </div>
     </div>
   );

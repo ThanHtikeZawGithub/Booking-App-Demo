@@ -8,7 +8,16 @@ const imageDownloader = require('image-downloader');
 const cookieParser = require('cookie-parser');
 const multer = require('multer');
 const fs = require('fs');
-
+const {
+    ref,
+    uploadBytes,
+    listAll,
+    deleteObject,
+    uploadBytesResumable,
+    getDownloadURL,
+    getStorage,
+  } = require("firebase/storage");
+const storage = require("./fireBase");
 
 
 const app = express();
@@ -30,7 +39,37 @@ app.use(cors({
 }));
 
 dotenv.config();
-mongoose.connect(process.env.MONGO_URL);
+
+
+
+//-------------------------------------//
+//firebase config
+
+
+async function uploadToFirebase(originalname, buffer ,mimetype) {
+    const newPath = Date.now() + '-' + originalname;
+    const imageRef = ref(storage, newPath);
+    const metadata = {
+        contentType: mimetype,
+    };
+    const snapshot = await uploadBytesResumable(imageRef, buffer, metadata);
+    const downloadURL = await getDownloadURL(snapshot.ref);
+    return downloadURL;
+};
+
+const photosMiddleware = multer({storage:multer.memoryStorage()});
+
+//upload file link route                                       
+app.post('/uploads',photosMiddleware.array('photos', 100), async(req,res)=>{
+    const uploadedFiles = [];
+    for (let i=0; i < req.files.length; i++) {
+        const file = req.files[i];    //.jpeg , .png etc..s
+        const downloadURL = await uploadToFirebase(file.originalname, file.buffer, file.mimetype);
+        uploadedFiles.push(downloadURL);
+    }
+    res.json(uploadedFiles);  //response to frontend //create function to send photo to firebase //map all the photos in firebase
+   
+} );
 
 
 function getUserDataFromToken(req) {
@@ -42,7 +81,9 @@ function getUserDataFromToken(req) {
     })
 }
 
+//register route
 app.post('/register', async (req,res)=>{
+    mongoose.connect(process.env.MONGO_URL);
     const {name,email,password} = req.body;
     try{
         const userInfo = await User.create({
@@ -56,7 +97,10 @@ app.post('/register', async (req,res)=>{
     }
 });
 
+
+//login route
 app.post('/login', async(req,res)=>{
+    mongoose.connect(process.env.MONGO_URL);
     const {email,password} = req.body;
     const userInfo = await User.findOne({email});
     if(userInfo){
@@ -74,7 +118,9 @@ app.post('/login', async(req,res)=>{
     }
 });
 
+//authentication
 app.get('/profile', (req,res)=>{
+    mongoose.connect(process.env.MONGO_URL);
     const {token} = req.cookies;
     if(token){
         jwt.verify(token, jwtSecret, {}, async (err, userData )=>{
@@ -87,39 +133,17 @@ app.get('/profile', (req,res)=>{
     }
 })
 
+//logout route
 app.post('/logout', (req,res)=>{
-    res.cookie('token', '').json(true);
+    res.cookie('token', '').json('You are already logout');
 });
 
 
-app.post('/upload-by-link', async(req,res)=>{
-    const {link} = req.body;
-    const newName = 'photo' + Date.now() + '.jpg';
-    await imageDownloader.image({
-        url: link,
-        dest: __dirname + '/uploads/' + newName
-    });
-    res.json(newName);
-});
-
-const photosMiddleware = multer({dest:'uploads/'});
-
-app.post('/uploads',photosMiddleware.array('photos', 100), (req,res)=>{
-    const uploadedFiles = [];
-    for (let i=0; i < req.files.length; i++) {
-        const {path, originalname} = req.files[i];
-        const parts = originalname.split('.');
-        const ext = parts[parts.length - 1];    //.jpeg , .png etc..
-        const newPath = path + '.' + ext;
-        fs.renameSync(path, newPath);
-        uploadedFiles.push(newPath.replace('uploads', ''));
-    }
-    res.json(uploadedFiles);
-   
-} );
 
 
+//place add form route
 app.post('/places', (req,res)=>{
+    mongoose.connect(process.env.MONGO_URL);
     const {token} = req.cookies;
     const {title, 
            address, 
@@ -150,7 +174,9 @@ app.post('/places', (req,res)=>{
 })
 });
 
+//single place routes
 app.get('/user-places', (req,res)=>{
+    mongoose.connect(process.env.MONGO_URL);
     const {token} = req.cookies;
     jwt.verify(token, jwtSecret, {}, async (err, userData )=>{
         if(err) throw err;
@@ -159,12 +185,16 @@ app.get('/user-places', (req,res)=>{
 })
 });
 
+//single place route
 app.get('/places/:id', async (req,res)=>{
+    mongoose.connect(process.env.MONGO_URL);
     const {id} = req.params;
     res.json(await Place.findById(id));
 });
 
+//edit place route
 app.put('/places', async (req,res)=>{
+    mongoose.connect(process.env.MONGO_URL);
     const {token} = req.cookies;
     const {id,
         title, 
@@ -199,11 +229,15 @@ app.put('/places', async (req,res)=>{
     });       
 });
 
+//fetching all the place routes
 app.get('/places', async (req,res)=>{
+    mongoose.connect(process.env.MONGO_URL);
     res.json( await Place.find() );
 });
 
+//booking route
 app.post('/booking', async (req,res)=>{
+    mongoose.connect(process.env.MONGO_URL);
     const userData = await getUserDataFromToken(req);
     const {place,
            checkIn,
@@ -228,7 +262,9 @@ app.post('/booking', async (req,res)=>{
     });
 });
 
+//finding placeInfo for the booking route
 app.get('/booking', async (req,res) => {
+    mongoose.connect(process.env.MONGO_URL);
    const userData = await getUserDataFromToken(req);
    res.json( await Booking.find({user: userData.id}).populate('place'));
 })

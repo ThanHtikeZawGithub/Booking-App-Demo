@@ -3,21 +3,14 @@ import { useState } from 'react';
 import { BiCloudUpload, } from "react-icons/bi";
 import {AiOutlineStar, AiFillStar} from 'react-icons/ai';
 import {BsTrash} from 'react-icons/bs';
+import Image from "./Image";
+
+
+
 
 const PhotoUpload = ({photo, OnChange}) => {
     const [photoLink, setPhotoLink] = useState("");
 
-    async function addPhotoByLink(e) {
-        e.preventDefault();
-        const { data: filename } = await axios.post("/upload-by-link", {
-          link: photoLink,
-        });
-        OnChange((prev) => {
-          return [...prev, filename];
-        });
-        setPhotoLink("");
-      }
-    
       async function uploadPhoto(e){
         e.preventDefault();
         const files = e.target.files;
@@ -49,27 +42,14 @@ const selectMainPhoto = (e,currentPhoto) => {
 
   return (
     <>
-    <div className="flex gap-2">
-              <input
-                type="text"
-                placeholder={"Add using a link (jpg)"}
-                value={photoLink}
-                onChange={(e) => setPhotoLink(e.target.value)}
-              />
-              <button
-                className="bg-gray-200 px-4 rounded-2xl"
-                onClick={addPhotoByLink}
-              >
-                Add Photos
-              </button>
-            </div>
+   
             <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 mt-3 text-xl text-gray-600">
               {photo.length > 0 &&
                 photo.map((link) => (
                   <div className="h-32 flex relative" key={link}>
-                    <img
+                    <Image
                       className="rounded-2xl w-full"
-                      src={"http://localhost:4000/uploads/" + link}
+                      src={link}
                       alt="photos"
                     />
                     <button onClick={(e)=>removePhoto(e,link)} className="absolute bottom-1 right-1 text-white bg-black p-1 bg-opacity-50 rounded-xl cursor-pointer">

@@ -26,7 +26,7 @@ const BookingPage = () => {
     <div className="bg-gray-100 my-8">
       <h2>{bookings.place.title}</h2>
       <a
-        className="flex items-center my-2 block font-semibold underline gap-1"
+        className="flex items-center my-2 font-semibold underline gap-1"
         target="_blank"
         href={`https://maps.google.com/?q=${bookings.place.address}`}
       >

@@ -15,10 +15,11 @@ const ProfilePage = () => {
     let {subpage} = useParams();
 
     async function logout() {
-        await axios.post('/logout');s
+        await axios.post('/logout');
         setToHomePage('/');
         setUser(null);
     }
+   
 
     if(toHomePage) {
         return <Navigate to={toHomePage}/>

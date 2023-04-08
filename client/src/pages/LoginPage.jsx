@@ -43,10 +43,10 @@ const LoginPage = () => {
                    placeholder='yourpassword'
                    value={password}
                    onChange={(e) => setPassword(e.target.value)} />
-            <button className='primary'>Login</button>
-            <div className='text-center py-2'>
-                Don't have an account yet?
-                <Link to={'/register'}className='underline'>Register</Link>
+            <button className='primary mt-2 hover:scale-105'>Login</button>
+            <div className='flex items-center justify-center mt-4 gap-2'>
+                <p>Don't have an account yet?</p>
+                <Link to={'/register'}className='underline hover:scale-105'>Register</Link>
             </div>
         </form>
         </div>

@@ -5,6 +5,8 @@ import axios from "axios";
 import { GrLocation } from "react-icons/gr";
 import { Booking, PlacePhoto } from "../components";
 
+//endpoint place/:id
+
 const PlacePage = () => {
   const [place, setPlace] = useState(null);
   const { id } = useParams();
@@ -22,10 +24,10 @@ const PlacePage = () => {
   }
 
   return (
-    <div className="mt-4 bg-gray-100 -mx-8 px-8 pt-4">
-      <h1 className="text-3xl mr-36">{place.title}</h1>
+    <div className="mt-4 bg-gray-100 -mx-8 px-4 md:px-24 pt-4">
+      <h1 className="text-md md:text-3xl justify-start font-medium my-6">{place.title}</h1>
       <a
-        className="flex items-center my-2 block font-semibold underline gap-1"
+        className="flex items-center my-2 font-semibold underline gap-1"
         target="_blank"
         href={`https://maps.google.com/?q=${place.address}`}
       >

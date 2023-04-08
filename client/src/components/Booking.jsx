@@ -69,9 +69,9 @@ const Booking = ({place}) => {
               )}
             </div>
             <button className="primary mt-4" onClick={BookThisPlace}>
-                Book this place
+                Book this place for {" "}
                 {numOfDays > 0 && (
-                    <span>{numOfDays * place.price}</span>
+                    <span className="font-semibold">{numOfDays * place.price} MMK</span>
                 )}
             </button>
           </div>

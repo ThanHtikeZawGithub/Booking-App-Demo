@@ -60,7 +60,7 @@ async function uploadToFirebase(originalname, buffer ,mimetype) {
 const photosMiddleware = multer({storage:multer.memoryStorage()});
 
 //upload file link route                                       
-app.post('/uploads',photosMiddleware.array('photos', 100), async(req,res)=>{
+app.post('/api/uploads',photosMiddleware.array('photos', 100), async(req,res)=>{
     const uploadedFiles = [];
     for (let i=0; i < req.files.length; i++) {
         const file = req.files[i];    //.jpeg , .png etc..s
@@ -82,7 +82,7 @@ function getUserDataFromToken(req) {
 }
 
 //register route
-app.post('/register', async (req,res)=>{
+app.post('/api/register', async (req,res)=>{
     mongoose.connect(process.env.MONGO_URL);
     const {name,email,password} = req.body;
     try{
@@ -99,7 +99,7 @@ app.post('/register', async (req,res)=>{
 
 
 //login route
-app.post('/login', async(req,res)=>{
+app.post('/api/login', async(req,res)=>{
     mongoose.connect(process.env.MONGO_URL);
     const {email,password} = req.body;
     const userInfo = await User.findOne({email});
@@ -119,7 +119,7 @@ app.post('/login', async(req,res)=>{
 });
 
 //authentication
-app.get('/profile', (req,res)=>{
+app.get('/api/profile', (req,res)=>{
     mongoose.connect(process.env.MONGO_URL);
     const {token} = req.cookies;
     if(token){
@@ -134,7 +134,7 @@ app.get('/profile', (req,res)=>{
 })
 
 //logout route
-app.post('/logout', (req,res)=>{
+app.post('/api/logout', (req,res)=>{
     res.cookie('token', '').json('You are already logout');
 });
 
@@ -142,7 +142,7 @@ app.post('/logout', (req,res)=>{
 
 
 //place add form route
-app.post('/places', (req,res)=>{
+app.post('/api/places', (req,res)=>{
     mongoose.connect(process.env.MONGO_URL);
     const {token} = req.cookies;
     const {title, 
@@ -175,7 +175,7 @@ app.post('/places', (req,res)=>{
 });
 
 //single place routes
-app.get('/user-places', (req,res)=>{
+app.get('/api/user-places', (req,res)=>{
     mongoose.connect(process.env.MONGO_URL);
     const {token} = req.cookies;
     jwt.verify(token, jwtSecret, {}, async (err, userData )=>{
@@ -186,14 +186,14 @@ app.get('/user-places', (req,res)=>{
 });
 
 //single place route
-app.get('/places/:id', async (req,res)=>{
+app.get('/api/places/:id', async (req,res)=>{
     mongoose.connect(process.env.MONGO_URL);
     const {id} = req.params;
     res.json(await Place.findById(id));
 });
 
 //edit place route
-app.put('/places', async (req,res)=>{
+app.put('/api/places', async (req,res)=>{
     mongoose.connect(process.env.MONGO_URL);
     const {token} = req.cookies;
     const {id,
@@ -230,13 +230,13 @@ app.put('/places', async (req,res)=>{
 });
 
 //fetching all the place routes
-app.get('/places', async (req,res)=>{
+app.get('/api/places', async (req,res)=>{
     mongoose.connect(process.env.MONGO_URL);
     res.json( await Place.find() );
 });
 
 //booking route
-app.post('/booking', async (req,res)=>{
+app.post('/api/booking', async (req,res)=>{
     mongoose.connect(process.env.MONGO_URL);
     const userData = await getUserDataFromToken(req);
     const {place,
@@ -263,7 +263,7 @@ app.post('/booking', async (req,res)=>{
 });
 
 //finding placeInfo for the booking route
-app.get('/booking', async (req,res) => {
+app.get('/api/booking', async (req,res) => {
     mongoose.connect(process.env.MONGO_URL);
    const userData = await getUserDataFromToken(req);
    res.json( await Booking.find({user: userData.id}).populate('place'));

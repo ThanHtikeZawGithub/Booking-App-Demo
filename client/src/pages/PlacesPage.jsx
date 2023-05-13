@@ -10,8 +10,6 @@ const PlacesPage = () => {
   const [places, setPlaces] = useState([]);
   useEffect(()=>{
     axios.get('/user-places').then(({data})=>{
-      console.log(data);
-
       setPlaces(data);
     });
   },[]);
@@ -30,8 +28,8 @@ const PlacesPage = () => {
         </div>
         <div className="py-12 md:px-24 overflow-hidden">
           {places.length > 0 && places.map(place => (
-            <Link to={'/account/places/' + place._id} className="flex gap-4 bg-gray-100 overflow-hidden p-4 rounded-2xl cursor-pointer">
-              <div className=" flex w-32 h-32 grow shrink-0" key={place.owner}>
+            <Link key={place._id} to={'/account/places/' + place._id} className="flex gap-4 bg-gray-100 overflow-hidden p-4 rounded-2xl cursor-pointer">
+              <div className=" flex w-32 h-32 grow shrink-0">
                 {place.photos.length > 0 && (
                   <Image src={place.photos[0]} alt="place photos" className="object-cover rounded-xl" />
                 )}
